@@ -153,10 +153,10 @@ def add_test_notification_class(event):
                     "style": "link",
                     "height": "sm",
                     "action": {
-                    "type": "postback",
-                    "label": "確認",
-                    "data": "action=confirm_class_test&course_id="+course_info["course_id"]+"&course_name="+course_info["course_name"],
-                    "displayText": "確認"
+                    "type": "datetimepicker",
+                    "label": "確認並設定通知時間",
+                    "data": "action=confirm_class_test&course_name="+course_info["course_name"],
+                    "mode": "datetime"
                     }
                 },
                 {
@@ -182,42 +182,13 @@ def add_test_notification_class(event):
     )
                     
 
-def add_test_notification_time(event, postback_data):
-    print(postback_data)
-    course_id = postback_data["course_id"]
-    # course_info = get_course_info(course_id)
-    course_info = get_course_info()
-    quick_reply_buttons = []
-    test_days = get_test_op()
-    for day in test_days:
-        quick_reply_button = QuickReplyButton(action=PostbackAction(label=f'{day}', text=f'{day}', data=f'action=select_test&day={day}&course_name={course_info["course_name"]}'))
-        quick_reply_buttons.append(quick_reply_button)
-    text_message = TextSendMessage(text='請選擇考試日期',
-                                   quick_reply=QuickReply(items=quick_reply_buttons))
-    line_bot_api.reply_message(
-        event.reply_token,
-        [text_message]
-    )
-
-# def add_test_notification_pre(event, postback_data):
-#     print(postback_data)
-#     quick_reply_buttons = []
-#     test_days = get_test_op()
-#     for day in test_days:
-#         quick_reply_button = QuickReplyButton(action=PostbackAction(label=f'{day}', text=f'{day}', data=f'action=select_test&day={day}&course_id={course_info["course_id"]}'))
-#         quick_reply_buttons.append(quick_reply_button)
-#     text_message = TextSendMessage(text='請選擇通知時間',
-#                                    quick_reply=QuickReply(items=quick_reply_buttons))
-#     line_bot_api.reply_message(
-#         event.reply_token,
-#         [text_message]
-#     )
-
 def add_test_notification_confirm(event, postback_data):
     print(postback_data)
+    print(event.postback.params)
+    date_time = event.postback.params["datetime"].replace("T", " ")
     text_msg = TextSendMessage(text=f'已新增考試通知:\n'+
                                     f'科目: {postback_data["course_name"]}\n'+
-                                    f'日期: {postback_data["day"]}')
+                                    f'通知時間: {date_time}')
     line_bot_api.reply_message(
         event.reply_token,
         [text_msg]

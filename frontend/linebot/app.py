@@ -94,12 +94,11 @@ def handle_postback(event):
         start_import(event)
     # test
     elif postback_data['action'] == 'confirm_class_test':
-        add_test_notification_time(event, postback_data)
-    elif postback_data['action'] == 'redo_class_test':
-        add_test_notification_init(event)  
-    elif postback_data['action'] == 'select_test':
         add_test_notification_confirm(event, postback_data)
         status = 0
+    elif postback_data['action'] == 'redo_class_test':
+        add_test_notification_init(event)  
+    
     # memo
     elif postback_data['action'] == 'confirm_class_memo':
         add_class_memo_memo(event)
