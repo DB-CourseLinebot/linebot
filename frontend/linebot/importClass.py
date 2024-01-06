@@ -1,5 +1,7 @@
 from linebotAPI import *
 from url import *
+# from sql import *
+from response import *
 from urllib.parse import parse_qsl
 from datetime import datetime, timedelta, date, time
 
@@ -13,13 +15,7 @@ def import_course(event):
     messageText = event.message.text
     print(messageText)
     # course_info = get_course_info(int(messageText))
-    course_info = { 
-        "course_id": "515518",
-        "course_name": "資料庫", 
-        "course_time": "R34",
-        "course_teacher": "曾意儒",
-        "course_location": "ED-117[GF]"
-    }
+    course_info = get_course_info()
     flex_msg = FlexSendMessage(
         alt_text='確認課程資訊',
         contents={
