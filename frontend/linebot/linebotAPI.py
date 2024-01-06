@@ -43,5 +43,15 @@ from linebot.v3.webhooks import (
     TextMessageContent
 )
 
-line_bot_api = LineBotApi('NVML7/0CX9eZmO0bK8ylIp3A0Dp0QzU3SvrfhbkyyRJQkw1VqHmLbsZ0tYdgB8wKcDdZ0ukyo5ETN3lOiEMxPyLf8kVQjumHt+vbS2dp9sTS8dWXwCM5dVYCeBunovH1gBwswXdnvvrRb7HUvDWf/wdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('4877833808d769d77908cbd77fa8e29e')
+from datetime import datetime
+
+def is_date_format(text):
+    try:
+        # Attempt to parse the text as a date
+        datetime.strptime(text, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False
+
+line_bot_api = LineBotApi('9423gG+CS1Cg1EHZSRO54T0wk9dQh6Ed7jcnfn3Gax9XIPw8v+2JjTTwMDROPYx3uOasjTuhSNFrTRTCY9JrXjAeAaVE2JJyGCysCAbfgGD3DtmVEuQV+9LOUmrdwIuxCDeZGGLoec6X6ymAk4QTlAdB04t89/1O/w1cDnyilFU=')
+handler = WebhookHandler('01d2b8a4c631309c7f2d6553aeba0532')
