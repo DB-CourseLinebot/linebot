@@ -13,10 +13,8 @@ def add_class_memo_init(event):
 def add_class_memo_class(event):
     messageText = event.message.text
     print(messageText)
-    print('test1')
     # course_info = get_course_info(int(messageText))
     course_info = get_course_info()
-    print('test2')
     flex_msg = FlexSendMessage(
         alt_text='確認課程資訊',
         contents={
@@ -177,9 +175,10 @@ def add_class_memo_class(event):
                     "style": "link",
                     "height": "sm",
                     "action": {
-                    "type": "message",
+                    "type": "postback",
                     "label": "確認",
-                    "text": "確認"
+                    "data": "action=confirm_class_memo",
+                    "displayText": "確認"
                     }
                 },
                 {
@@ -187,9 +186,10 @@ def add_class_memo_class(event):
                     "style": "link",
                     "height": "sm",
                     "action": {
-                    "type": "message",
+                    "type": "postback",
                     "label": "重新輸入課號",
-                    "text": "重新輸入課號"
+                    "data": "action=redo_class_memo",
+                    "displayText": "重新輸入課號"
                     }
                 }
                 ],
@@ -197,7 +197,6 @@ def add_class_memo_class(event):
             }
         }
     )
-    print('test3')
     text_msg = TextSendMessage(text='請確認課程資訊')
     line_bot_api.reply_message(
             event.reply_token,

@@ -153,9 +153,10 @@ def add_test_notification_class(event):
                     "style": "link",
                     "height": "sm",
                     "action": {
-                    "type": "message",
+                    "type": "postback",
                     "label": "確認",
-                    "text": "確認"
+                    "data": "action=confirm_class_test&course_id="+course_info["course_id"]+"&course_name="+course_info["course_name"],
+                    "displayText": "確認"
                     }
                 },
                 {
@@ -163,9 +164,10 @@ def add_test_notification_class(event):
                     "style": "link",
                     "height": "sm",
                     "action": {
-                    "type": "message",
+                    "type": "postback",
                     "label": "重新輸入課號",
-                    "text": "重新輸入課號"
+                    "data": "action=redo_class_test",
+                    "displayText": "重新輸入課號"
                     }
                 }
                 ],
@@ -180,10 +182,10 @@ def add_test_notification_class(event):
     )
                     
 
-def add_test_notification_time(event):
-    messageText = event.message.text
-    print(messageText)
-    # course_info = get_course_info(int(messageText))
+def add_test_notification_time(event, postback_data):
+    print(postback_data)
+    course_id = postback_data["course_id"]
+    # course_info = get_course_info(course_id)
     course_info = get_course_info()
     quick_reply_buttons = []
     test_days = get_test_op()
@@ -213,7 +215,9 @@ def add_test_notification_time(event):
 
 def add_test_notification_confirm(event, postback_data):
     print(postback_data)
-    text_msg = TextSendMessage(text=f'已新增考試通知:\n科目: {postback_data["course_name"]}\n日期: {postback_data["day"]}')
+    text_msg = TextSendMessage(text=f'已新增考試通知:\n'+
+                                    f'科目: {postback_data["course_name"]}\n'+
+                                    f'日期: {postback_data["day"]}')
     line_bot_api.reply_message(
         event.reply_token,
         [text_msg]

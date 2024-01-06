@@ -1,8 +1,8 @@
 from flask import Flask, request, abort
 from extensions import db, migrate
 from models.user import User
-from models.notifyTime import ClassNotification, TestNotification
-from models.sql import *
+from models.notification import ClassNotification, TestNotification
+from sql import *
 from linebotAPI import *
 from url import *
 # from notification import *
@@ -47,77 +47,58 @@ def handle_unfollow(event):
 def handle_follow(event):
     print(event)
 
-step = 0
+status = 0
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    global step
+    global status
     profile = line_bot_api.get_profile(event.source.user_id)
     messageText = event.message.text
-    print("$$"+messageText)
-    print(messageText.isdigit())
-    print(step)
     # 匯入課表
     if messageText == "@匯入課表":
         start_import(event)
-        step = 1
-    elif messageText.isdigit() and step == 1:
+        status = 1
+    elif messageText.isdigit() and status == 1:
         import_course(event)
-        step = 2
-    elif messageText == "確認" and step == 2:
-        confirm_message(event)
-        step = 0
-    elif messageText == "重新輸入課號" and step == 2:
-        start_import(event)
-        step = 1
     # 新增考試通知
     elif messageText == "@新增考試通知":
         add_test_notification_init(event)
-        step = 11
-    elif messageText.isdigit() and step == 11:
+        status = 2
+    elif messageText.isdigit() and status == 2:
         add_test_notification_class(event)
-        step = 12
-    elif messageText == "確認" and step == 12:
-        add_test_notification_time(event)
-        step = 13
-    elif messageText == "重新輸入課號" and step == 12:
-        add_test_notification_init(event)
-        step = 11
     # 課程備註 
     elif messageText == "@課程備註":
         add_class_memo_init(event)
-        step = 21
-    elif messageText.isdigit() and step == 21:
+        status = 3
+    elif messageText.isdigit() and status == 3:
         add_class_memo_class(event)
-        step = 22
-    elif messageText == "確認" and step == 22:
-        add_class_memo_memo(event)
-        step = 23
-    elif messageText == "重新輸入課號" and step == 22:
-        add_class_memo_init(event)
-        step = 21
-    elif step == 23:
+    elif status == 30:
         add_class_memo_confirm(event)
-        step = 24
+        status = 0
     elif not is_date_format(messageText):
         error_event(event)
-    print(f'###{step}')
     
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    global step
+    global status
     profile = line_bot_api.get_profile(event.source.user_id)
     postback_data = dict(parse_qsl(event.postback.data))
-    print(postback_data)
     if postback_data['action'] == 'select_test':
         add_test_notification_confirm(event, postback_data)
-        step = 0
-    # elif postback_data['action'] == 'select_time':
-    #     if step == 13:
-    #         add_test_notification_time(event, postback_data['time'])
-    #         step = 13
-    #     elif step == 23:
-    #         add_class_memo_time(event, postback_data['time'])
-    #         step = 23
+        status = 0
+    elif postback_data['action'] == 'confirm_class':
+        confirm_message(event)
+        status = 0
+    elif postback_data['action'] == 'redo_class':
+        start_import(event)
+    elif postback_data['action'] == 'confirm_class_test':
+        add_test_notification_time(event, postback_data)
+    elif postback_data['action'] == 'redo_class_test':
+        add_test_notification_init(event)  
+    elif postback_data['action'] == 'confirm_class_memo':
+        add_class_memo_memo(event)
+        status = 30
+    elif postback_data['action'] == 'redo_class_memo':
+        add_class_memo_init(event)
 
 if __name__ == "__main__":
     app.run()

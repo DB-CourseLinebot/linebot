@@ -154,9 +154,10 @@ def import_course(event):
                     "style": "link",
                     "height": "sm",
                     "action": {
-                    "type": "message",
+                    "type": "postback",
                     "label": "確認",
-                    "text": "確認"
+                    "data": "action=confirm_class",
+                    "displayText": "確認"
                     }
                 },
                 {
@@ -164,9 +165,10 @@ def import_course(event):
                     "style": "link",
                     "height": "sm",
                     "action": {
-                    "type": "message",
+                    "type": "postback",
                     "label": "重新輸入課號",
-                    "text": "重新輸入課號"
+                    "data": "action=redo_class",
+                    "displayText": "重新輸入課號"
                     }
                 }
                 ],
