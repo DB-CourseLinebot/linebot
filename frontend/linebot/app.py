@@ -97,7 +97,7 @@ def handle_message(event):
         step = 21
     elif step == 23:
         add_class_memo_confirm(event)
-        step = 0
+        step = 24
     elif not is_date_format(messageText):
         error_event(event)
     print(f'###{step}')
