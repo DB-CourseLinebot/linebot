@@ -182,13 +182,6 @@ def import_course(event):
             [text_msg, flex_msg]
     )
 
-def error_event(event):
-    print(event)
-    line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text='請輸入正確指令')
-    )
-    
 def confirm_message(event):
     line_bot_api.reply_message(
             event.reply_token,

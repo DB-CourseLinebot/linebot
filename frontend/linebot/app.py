@@ -2,10 +2,10 @@ from flask import Flask, request, abort
 from extensions import db, migrate
 from models.user import User
 from models.notification import ClassNotification, TestNotification
-from sql import *
+from models.classes import Class
+# from sql import *
 from linebotAPI import *
 from url import *
-# from notification import *
 from addTest import *
 from addMemo import *
 from importClass import *
@@ -74,26 +74,33 @@ def handle_message(event):
     elif status == 30:
         add_class_memo_confirm(event)
         status = 0
+    # error event
     elif not is_date_format(messageText):
-        error_event(event)
+        print(event)
+        line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='請輸入正確指令')
+        )
     
 @handler.add(PostbackEvent)
 def handle_postback(event):
     global status
     profile = line_bot_api.get_profile(event.source.user_id)
     postback_data = dict(parse_qsl(event.postback.data))
-    if postback_data['action'] == 'select_test':
-        add_test_notification_confirm(event, postback_data)
-        status = 0
-    elif postback_data['action'] == 'confirm_class':
+    if postback_data['action'] == 'confirm_class':
         confirm_message(event)
         status = 0
     elif postback_data['action'] == 'redo_class':
         start_import(event)
+    # test
     elif postback_data['action'] == 'confirm_class_test':
         add_test_notification_time(event, postback_data)
     elif postback_data['action'] == 'redo_class_test':
         add_test_notification_init(event)  
+    elif postback_data['action'] == 'select_test':
+        add_test_notification_confirm(event, postback_data)
+        status = 0
+    # memo
     elif postback_data['action'] == 'confirm_class_memo':
         add_class_memo_memo(event)
         status = 30
