@@ -1,0 +1,4 @@
+./frontend/.venv/*
+./frontend/.idea/*
+./frontend/__pycache__/*
+*.pyc
